@@ -51,6 +51,8 @@ class RoomView(View, LoginRequiredMixin):
         try:
             get_object_or_404(Room, pk=pk).delete()
         except models.RestrictedError:
-            return JsonResponse({"error": "You cant delete a room with events"}, status=403)
+            return JsonResponse(
+                {"error": "You cant delete a room with events"}, status=403
+            )
 
         return JsonResponse({"status": "sucess"})

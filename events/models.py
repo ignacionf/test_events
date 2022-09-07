@@ -21,11 +21,10 @@ class Event(models.Model):
     class Meta:
         unique_together = [["date", "room"]]
 
+
 @receiver(m2m_changed, sender=Event.customers.through)
 def event_customers_changed(sender, **kwargs):
-    if kwargs.get('action') == "pre_add":
+    if kwargs.get("action") == "pre_add":
         instance = kwargs.get("instance")
         if instance.customers.count() >= instance.room.capacity:
             raise Exception("Exceeds room capacity")
-
-

@@ -28,7 +28,11 @@ class EventView(View, LoginRequiredMixin):
                 "id": instance.id,
                 "name": instance.name,
                 "date": instance.date,
-                "capacity": {"max": instance.room.capacity, "booked": booked_count, "available": instance.room.capacity - booked_count}
+                "capacity": {
+                    "max": instance.room.capacity,
+                    "booked": booked_count,
+                    "available": instance.room.capacity - booked_count,
+                },
             }
             return JsonResponse(data)
 
@@ -57,8 +61,8 @@ class EventView(View, LoginRequiredMixin):
         get_object_or_404(Event, pk=pk).delete()
         return JsonResponse({"status": "sucess"})
 
-class BookView(View, LoginRequiredMixin):
 
+class BookView(View, LoginRequiredMixin):
     @method_decorator(login_required)
     @method_decorator(permission_required("events.change_event"))
     def post(self, request, pk):
