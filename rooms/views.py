@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db import models
 
 
 from .models import Room
@@ -42,10 +43,14 @@ class RoomView(View, LoginRequiredMixin):
             instance = form.save()
             return JsonResponse(model_to_dict(instance))
 
-        return JsonResponse({"errors": form.errors.as_json()})
+        return JsonResponse({"errors": form.errors.as_json()}, status=400)
 
     @method_decorator(login_required)
     @method_decorator(permission_required("rooms.delete_room"))
     def delete(self, request, pk):
-        get_object_or_404(Room, pk=pk).delete()
+        try:
+            get_object_or_404(Room, pk=pk).delete()
+        except models.RestrictedError:
+            return JsonResponse({"error": "You cant delete a room with events"}, status=403)
+
         return JsonResponse({"status": "sucess"})
