@@ -64,6 +64,16 @@ class EventView(View, LoginRequiredMixin):
 
 class BookView(View, LoginRequiredMixin):
     @method_decorator(login_required)
+    @method_decorator(permission_required("events.view_event"))
+    def get(self, request, pk):
+        event = get_object_or_404(Event, pk=pk, private=False)
+
+        if event.customers.filter(id=request.user.id):
+            return JsonResponse({"status": "you are registered for this event"})
+
+        return JsonResponse({"status": "you aren't registered for this event"})
+
+    @method_decorator(login_required)
     @method_decorator(permission_required("events.change_event"))
     def post(self, request, pk):
         event = get_object_or_404(Event, pk=pk, private=False)

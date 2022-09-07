@@ -73,6 +73,13 @@ curl 'http://localhost:8000/event/' \
 
 ### Book and unbook via curl:
 
+Check:
+```
+curl 'http://localhost:8000/event/2/book/' \
+  -H 'Cookie: csrftoken=<get from browser cookies>; sessionid=<get from browser cookies>' \
+  --compressed -X GET
+```
+
 Book:
 ```
 curl 'http://localhost:8000/event/2/book/' \
